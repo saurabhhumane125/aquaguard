@@ -1,0 +1,235 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [postgis]
+}
+
+// User model
+model User {
+  id         String   @id @default(uuid())
+  phone      String?  @unique
+  email      String?  @unique
+  name       String
+  role       Role     @default(CITIZEN)
+  points     Int      @default(0)
+  trustScore Float    @default(100.0)
+  isActive   Boolean  @default(true)
+
+  // Relationships
+  leaksReported Leak[]       @relation("ReportedLeaks")
+  upvotes       LeakUpvote[]
+  comments      Comment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([phone])
+  @@index([email])
+}
+
+// Leak report model
+model Leak {
+  id        String   @id @default(uuid())
+
+  // Location data
+  latitude  Float
+  longitude Float
+  address   String
+  landmark  String?
+
+  // Media
+  photoUrl  String
+  photoHash String?
+  exifData  Json?
+
+  // Leak details
+  severity          Severity
+  category          LeakCategory @default(PIPE_BURST)
+  flowRate          FlowRate
+  description       String?
+  estimatedDuration Int? // in hours
+
+  // Status tracking
+  status       Status @default(REPORTED)
+  priorityScore Int    @default(0)
+
+  // Water loss calculations
+  waterLossRate Float? // liters/hour
+  estimatedCost Float? // in rupees
+
+  // Clustering
+  clusterId String?
+  cluster   Cluster? @relation(fields: [clusterId], references: [id])
+
+  // Relationships
+  reporterId     String
+  reporter       User     @relation("ReportedLeaks", fields: [reporterId], references: [id])
+  assignedCrewId String?
+  assignedCrew   Crew?    @relation(fields: [assignedCrewId], references: [id])
+
+  upvotes       LeakUpvote[]
+  comments      Comment[]
+  statusHistory StatusHistory[]
+
+  // Resolution
+  resolvedAt         DateTime?
+  resolvedByCrewId   String?
+  resolutionPhotoUrl String?
+  resolutionNotes    String?
+
+  // Fraud detection
+  isFlagged  Boolean @default(false)
+  flagReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([latitude, longitude])
+  @@index([reporterId])
+  @@index([clusterId])
+  @@index([createdAt])
+}
+
+// Cluster model (groups nearby leaks)
+model Cluster {
+  id              String @id @default(uuid())
+  centerLatitude  Float
+  centerLongitude Float
+  radius          Float  @default(100.0) // in meters
+
+  leaks         Leak[]
+  totalReports  Int    @default(0)
+  priorityScore Int    @default(0)
+  status        Status @default(REPORTED)
+
+  assignedCrewId String?
+  assignedCrew   Crew?   @relation(fields: [assignedCrewId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([centerLatitude, centerLongitude])
+}
+
+// Crew/Worker model
+model Crew {
+  id    String  @id @default(uuid())
+  name  String
+  phone String  @unique
+  email String?
+
+  currentLatitude  Float?
+  currentLongitude Float?
+
+  availability Boolean  @default(true)
+  expertise    String[]
+
+  assignedLeaks    Leak[]
+  assignedClusters Cluster[]
+  workHistory      StatusHistory[]
+
+  totalResolved   Int    @default(0)
+  avgResponseTime Float? // in hours
+  rating          Float  @default(5.0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([phone])
+  @@index([availability])
+}
+
+model LeakUpvote {
+  id        String   @id @default(uuid())
+  leakId    String
+  leak      Leak     @relation(fields: [leakId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([leakId, userId])
+  @@index([leakId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String   @db.VarChar(200)
+  leakId    String
+  leak      Leak     @relation(fields: [leakId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([leakId])
+}
+
+model StatusHistory {
+  id        String   @id @default(uuid())
+  leakId    String
+  leak      Leak     @relation(fields: [leakId], references: [id], onDelete: Cascade)
+  oldStatus Status
+  newStatus Status
+  changedBy String?
+  crew      Crew?    @relation(fields: [changedBy], references: [id])
+  notes     String?
+  createdAt DateTime @default(now())
+
+  @@index([leakId])
+}
+
+model OTP {
+  id         String   @id @default(uuid())
+  identifier String
+  code       String
+  expiresAt  DateTime
+  verified   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([identifier])
+  @@index([expiresAt])
+}
+
+enum Role {
+  CITIZEN
+  AUTHORITY
+  CREW
+  ADMIN
+}
+
+enum Status {
+  REPORTED
+  VERIFIED
+  IN_PROGRESS
+  RESOLVED
+  REJECTED
+}
+
+enum Severity {
+  MINOR
+  MODERATE
+  SEVERE
+  CRITICAL
+}
+
+enum LeakCategory {
+  PIPE_BURST
+  TAP_LEAK
+  UNDERGROUND
+  VALVE_LEAK
+  METER_LEAK
+  OTHER
+}
+
+enum FlowRate {
+  DRIP
+  STREAM
+  GUSH
+  FLOOD
+}
