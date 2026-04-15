@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/citizen/Dashboard';
 import ReportLeak from './pages/citizen/ReportLeak';
 import Leaderboard from './pages/citizen/Leaderboard';
+import Profile from './pages/citizen/Profile';
 import AuthorityDashboard from './pages/authority/Dashboard';
 
 // Protected Route Wrapper
@@ -32,7 +33,7 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50 flex flex-col pt-16 pb-20 md:pb-0">
+      <div className="min-h-screen bg-slate-950 flex flex-col pt-16 pb-20 md:pb-0">
         <Navbar />
         
         <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -62,6 +63,14 @@ function App() {
               element={
                 <ProtectedRoute role="CITIZEN">
                   <Leaderboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute role="CITIZEN">
+                  <Profile />
                 </ProtectedRoute>
               } 
             />

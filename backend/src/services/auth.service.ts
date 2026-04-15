@@ -132,4 +132,36 @@ export class AuthService {
       data
     });
   }
+
+  // Get Leaderboard
+  static async getLeaderboard(): Promise<any[]> {
+    const users = await prisma.user.findMany({
+      where: { role: 'CITIZEN' },
+      orderBy: { points: 'desc' },
+      take: 100,
+      select: {
+        id: true,
+        name: true,
+        points: true,
+        _count: {
+          select: { leaksReported: true }
+        }
+      }
+    });
+
+    return users.map(user => {
+      let badge = 'Observer';
+      if (user.points >= 500) badge = 'Water Savior';
+      else if (user.points >= 250) badge = 'Eco Warrior';
+      else if (user.points >= 100) badge = 'Scout';
+
+      return {
+        id: user.id,
+        name: user.name,
+        points: user.points,
+        leaksReported: user._count.leaksReported,
+        badge
+      };
+    });
+  }
 }

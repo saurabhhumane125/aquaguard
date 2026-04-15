@@ -7,7 +7,7 @@ import path from 'path';
 const prisma = new PrismaClient();
 
 export class LeakService {
-  static async reportLeak(data: any, file: Express.Multer.File, userId: string): Promise<Leak> {
+  static async reportLeak(data: any, file: any, userId: string): Promise<Leak> {
     try {
       // 1. Process image for validation
       const exifData = await ExifService.extractExif(file.path);

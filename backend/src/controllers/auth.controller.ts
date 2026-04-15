@@ -3,7 +3,7 @@ import { AuthService } from '../services/auth.service';
 import { otpRequestSchema, otpVerifySchema, userUpdateSchema } from '../utils/validators';
 
 export class AuthController {
-  static async sendOTP(req: Request, res: Response) {
+  static async sendOTP(req: any, res: Response) {
     try {
       const { identifier, type } = otpRequestSchema.parse(req.body);
       const result = await AuthService.sendOTP(identifier, type);
@@ -13,7 +13,7 @@ export class AuthController {
     }
   }
 
-  static async verifyOTP(req: Request, res: Response) {
+  static async verifyOTP(req: any, res: Response) {
     try {
       const { identifier, code } = otpVerifySchema.parse(req.body);
       const { name } = req.body;
@@ -38,7 +38,7 @@ export class AuthController {
     }
   }
 
-  static async getProfile(req: Request, res: Response) {
+  static async getProfile(req: any, res: Response) {
     try {
       if (!req.user) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -53,7 +53,7 @@ export class AuthController {
     }
   }
 
-  static async updateProfile(req: Request, res: Response) {
+  static async updateProfile(req: any, res: Response) {
     try {
       if (!req.user) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -66,7 +66,16 @@ export class AuthController {
     }
   }
 
-  static async logout(req: Request, res: Response) {
+  static async logout(req: any, res: Response) {
     res.json({ success: true, message: 'Logged out successfully' });
+  }
+
+  static async getLeaderboard(req: any, res: Response) {
+    try {
+      const leaderboard = await AuthService.getLeaderboard();
+      res.json(leaderboard);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
   }
 }

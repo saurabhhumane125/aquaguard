@@ -44,7 +44,9 @@ export const authAPI = {
   updateProfile: (data: { name?: string }) => 
     api.put('/auth/profile', data),
     
-  logout: () => api.post('/auth/logout')
+  logout: () => api.post('/auth/logout'),
+  
+  getLeaderboard: () => api.get('/auth/leaderboard')
 };
 
 // Leak API calls

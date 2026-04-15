@@ -31,6 +31,7 @@ export interface Leak {
   description?: string;
   status: Status;
   priorityScore: number;
+  waterLossRate: number;
   reporterId: string;
   reporter?: { name: string; points: number };
   _count?: { upvotes: number; comments: number };

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { LeakService } from '../services/leak.service';
 
 export class LeakController {
-  static async reportLeak(req: Request, res: Response) {
+  static async reportLeak(req: any, res: Response) {
     try {
       if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
       if (!req.file) return res.status(400).json({ error: 'Photo is required' });
@@ -20,7 +20,7 @@ export class LeakController {
     }
   }
 
-  static async getLeaks(req: Request, res: Response) {
+  static async getLeaks(req: any, res: Response) {
     try {
       const leaks = await LeakService.getLeaks(req.query as any);
       res.json(leaks);
@@ -29,9 +29,9 @@ export class LeakController {
     }
   }
 
-  static async getLeakById(req: Request, res: Response) {
+  static async getLeakById(req: any, res: Response) {
     try {
-      const leak = await LeakService.getLeakById(req.params.id);
+      const leak = await LeakService.getLeakById(req.params.id as string);
       if (!leak) return res.status(404).json({ error: 'Leak not found' });
       res.json(leak);
     } catch (error: any) {
@@ -39,7 +39,7 @@ export class LeakController {
     }
   }
 
-  static async getMyLeaks(req: Request, res: Response) {
+  static async getMyLeaks(req: any, res: Response) {
     try {
       if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
       const leaks = await LeakService.getMyLeaks(req.user.userId);
@@ -49,10 +49,10 @@ export class LeakController {
     }
   }
 
-  static async upvoteLeak(req: Request, res: Response) {
+  static async upvoteLeak(req: any, res: Response) {
     try {
       if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
-      const result = await LeakService.upvoteLeak(req.params.id, req.user.userId);
+      const result = await LeakService.upvoteLeak(req.params.id as string, req.user.userId);
       res.json(result);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
