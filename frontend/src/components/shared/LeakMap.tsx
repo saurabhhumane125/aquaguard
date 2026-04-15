@@ -50,11 +50,11 @@ const LeakMap: React.FC<LeakMapProps> = ({
                 <h3 className="font-bold text-gray-900">{leak.category.replace('_', ' ')}</h3>
                 <p className="text-sm text-gray-600 mb-1">{leak.address}</p>
                 <div className="flex gap-2 text-xs font-semibold">
-                  <span className={\`px-2 py-0.5 rounded \${
+                  <span className={`px-2 py-0.5 rounded ${
                     leak.severity === 'CRITICAL' ? 'bg-red-100 text-red-700' :
                     leak.severity === 'SEVERE' ? 'bg-orange-100 text-orange-700' :
                     'bg-yellow-100 text-yellow-700'
-                  }\`}>
+                  }`}>
                     {leak.severity}
                   </span>
                   <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded">

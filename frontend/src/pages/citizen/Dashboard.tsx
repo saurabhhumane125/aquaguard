@@ -14,7 +14,7 @@ const Dashboard = () => {
   // Example stats for MVP
   const stats = [
     { label: 'Total Points', value: user?.points || 0, icon: Droplets, color: 'text-blue-500', bg: 'bg-blue-50' },
-    { label: 'Trust Score', value: \`\${user?.trustScore || 100}%\`, icon: ShieldCheck, color: 'text-green-500', bg: 'bg-green-50' },
+    { label: 'Trust Score', value: `${user?.trustScore || 100}%`, icon: ShieldCheck, color: 'text-green-500', bg: 'bg-green-50' },
     { label: 'Reports Active', value: recentLeaks.filter(l => l.status !== 'RESOLVED' && l.status !== 'REJECTED').length, icon: TrendingUp, color: 'text-orange-500', bg: 'bg-orange-50' },
   ];
 
@@ -56,7 +56,7 @@ const Dashboard = () => {
           const Icon = stat.icon;
           return (
             <div key={i} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center space-x-4">
-              <div className={\`\${stat.bg} \${stat.color} p-3 rounded-lg\`}>
+              <div className={`${stat.bg} ${stat.color} p-3 rounded-lg`}>
                 <Icon size={24} />
               </div>
               <div>
@@ -115,10 +115,10 @@ const Dashboard = () => {
                       <p className="text-xs text-gray-500 truncate max-w-[150px]">
                         {leak.address}
                       </p>
-                      <span className={\`inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full font-medium
-                        \${leak.status === 'RESOLVED' ? 'bg-green-100 text-green-700' :
+                      <span className={`inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full font-medium
+                        ${leak.status === 'RESOLVED' ? 'bg-green-100 text-green-700' :
                           leak.status === 'VERIFIED' ? 'bg-blue-100 text-blue-700' :
-                          'bg-yellow-100 text-yellow-700'}\`}
+                          'bg-yellow-100 text-yellow-700'}`}
                       >
                         {leak.status}
                       </span>

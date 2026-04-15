@@ -105,11 +105,11 @@ const AuthorityDashboard = () => {
                   <div key={leak.id} className="p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex items-center space-x-2">
-                        <span className={\`h-2 w-2 rounded-full \${
+                        <span className={`h-2 w-2 rounded-full ${
                             leak.severity === 'CRITICAL' ? 'bg-red-500' :
                             leak.severity === 'SEVERE' ? 'bg-orange-500' :
                             'bg-yellow-500'
-                          }\`} 
+                          }`} 
                         />
                         <span className="font-bold text-gray-900 text-sm">Priority {leak.priorityScore}/100</span>
                       </div>

@@ -37,8 +37,8 @@ const Leaderboard = () => {
           {leaders.sort((a, b) => b.points - a.points).map((leader, index) => (
             <div 
               key={leader.id} 
-              className={\`flex items-center p-4 sm:px-6 transition-colors hover:bg-gray-50
-                \${leader.isCurrent ? 'bg-primary-50/50 border-l-4 border-primary-500' : ''}\`}
+              className={`flex items-center p-4 sm:px-6 transition-colors hover:bg-gray-50
+                ${leader.isCurrent ? 'bg-primary-50/50 border-l-4 border-primary-500' : ''}`}
             >
               {/* Rank */}
               <div className="flex-shrink-0 w-12 text-center">
@@ -51,7 +51,7 @@ const Leaderboard = () => {
               {/* User Info */}
               <div className="ml-4 flex-1">
                 <div className="flex items-center">
-                  <h3 className={\`text-sm sm:text-base font-bold \${leader.isCurrent ? 'text-primary-700' : 'text-gray-900'}\`}>
+                  <h3 className={`text-sm sm:text-base font-bold ${leader.isCurrent ? 'text-primary-700' : 'text-gray-900'}`}>
                     {leader.name}
                   </h3>
                   {leader.isCurrent && (

@@ -81,13 +81,13 @@ const ReportLeak = () => {
         <div className="flex items-center justify-center mt-6">
           {[1, 2, 3].map((s) => (
             <div key={s} className="flex items-center">
-              <div className={\`h-8 w-8 rounded-full flex items-center justify-center font-bold text-sm
-                \${step >= s ? 'bg-primary-500 text-white' : 'bg-gray-200 text-gray-500'}\`}
+              <div className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-sm
+                ${step >= s ? 'bg-primary-500 text-white' : 'bg-gray-200 text-gray-500'}`}
               >
                 {s}
               </div>
               {s < 3 && (
-                <div className={\`w-12 h-1 \${step > s ? 'bg-primary-500' : 'bg-gray-200'}\`} />
+                <div className={`w-12 h-1 ${step > s ? 'bg-primary-500' : 'bg-gray-200'}`} />
               )}
             </div>
           ))}
@@ -219,10 +219,10 @@ const ReportLeak = () => {
                   <button
                     key={sev}
                     onClick={() => setDetails({...details, severity: sev})}
-                    className={\`py-2 px-3 border rounded-lg text-sm font-medium transition-all
-                      \${details.severity === sev 
+                    className={`py-2 px-3 border rounded-lg text-sm font-medium transition-all
+                      ${details.severity === sev 
                         ? 'border-primary-500 bg-primary-50 text-primary-700 ring-1 ring-primary-500' 
-                        : 'border-gray-200 text-gray-600 hover:bg-gray-50'}\`}
+                        : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
                   >
                     {sev}
                   </button>
