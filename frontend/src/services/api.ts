@@ -35,6 +35,11 @@ api.interceptors.response.use(
 export const authAPI = {
   sendOTP: (identifier: string, type: 'email' | 'phone') => 
     api.post('/auth/send-otp', { identifier, type }),
+  requestOTP: (payload: { email?: string; phone?: string }) =>
+    api.post('/auth/send-otp', {
+      identifier: payload.email || payload.phone || '',
+      type: payload.email ? 'email' : 'phone'
+    }),
     
   verifyOTP: (identifier: string, code: string, name?: string) => 
     api.post('/auth/verify-otp', { identifier, code, name }),

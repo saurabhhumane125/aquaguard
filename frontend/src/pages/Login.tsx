@@ -14,8 +14,7 @@ const Login = () => {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
-  const setToken = useAuthStore((state) => state.setToken);
-  const setUser = useAuthStore((state) => state.setUser);
+  const login = useAuthStore((state) => state.login);
 
   const handleRequestOTP = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,8 +22,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const payload = type === 'email' ? { email: identifier } : { phone: identifier };
-      await authAPI.requestOTP(payload);
+      await authAPI.sendOTP(identifier, type);
       setStep('verify');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to send OTP. Please try again.');
@@ -39,14 +37,11 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const payload = type === 'email' ? { email: identifier, otp } : { phone: identifier, otp };
-      const response = await authAPI.verifyOTP(payload);
-      
-      setToken(response.data.token);
-      setUser(response.data.user);
+      const response = await authAPI.verifyOTP(identifier, otp);
+      login(response.data.user, response.data.token);
       
       if (response.data.user.role === 'AUTHORITY') {
-        navigate('/authority');
+        navigate('/admin');
       } else {
         navigate('/');
       }
@@ -203,7 +198,7 @@ const Login = () => {
                     required
                     maxLength={6}
                     value={otp}
-                    onChange={(e) => setOtp(e.target.value.replace(/\\D/g, ''))}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                     className="block w-full px-4 py-4 text-center tracking-[0.5em] font-mono text-2xl font-bold bg-black/30 border border-white/10 rounded-xl focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 focus:bg-white/5 text-white transition-all shadow-inner"
                     placeholder="••••••"
                   />

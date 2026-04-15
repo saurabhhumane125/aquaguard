@@ -22,7 +22,7 @@ const ProtectedRoute = ({ children, role }: { children: React.ReactNode; role?: 
   }
 
   if (role && user?.role !== role && user?.role !== 'ADMIN') {
-    return <Navigate to="/" replace />; // Redirect to their own dashboard
+    return <Navigate to={user?.role === 'AUTHORITY' ? '/admin' : '/'} replace />;
   }
 
   return <>{children}</>;
@@ -76,6 +76,14 @@ function App() {
             />
 
             {/* Authority/Admin Routes */}
+            <Route 
+              path="/authority" 
+              element={
+                <ProtectedRoute role="AUTHORITY">
+                  <AuthorityDashboard />
+                </ProtectedRoute>
+              } 
+            />
             <Route 
               path="/admin" 
               element={

@@ -14,12 +14,14 @@ const Navbar = () => {
     navigate('/login');
   };
 
+  const homePath = user?.role === 'AUTHORITY' ? '/admin' : '/';
+
   return (
     <nav className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/50 shadow-lg shadow-black/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex flex-shrink-0 items-center group">
+            <Link to={homePath} className="flex flex-shrink-0 items-center group">
               <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-2 rounded-xl group-hover:scale-105 transition-transform duration-300 shadow-lg shadow-cyan-500/20">
                 <Droplets className="h-6 w-6 text-white" />
               </div>

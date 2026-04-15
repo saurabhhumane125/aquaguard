@@ -13,6 +13,7 @@ router.get('/:id', LeakController.getLeakById);
 router.use(authenticate);
 
 router.post('/', upload.single('photo'), LeakController.reportLeak);
+router.get('/my', LeakController.getMyLeaks);
 router.get('/user/my', LeakController.getMyLeaks); // Handle /my instead of using root
 router.post('/:id/upvote', LeakController.upvoteLeak);
 

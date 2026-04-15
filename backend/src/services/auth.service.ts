@@ -37,7 +37,7 @@ export class AuthService {
       if (type === 'email') {
         await EmailService.sendOTP(identifier, otp);
       } else {
-        throw new Error('Only email verification is supported currently.');
+        await SmsService.sendOTP(identifier, otp);
       }
 
       return {
