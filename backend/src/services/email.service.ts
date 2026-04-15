@@ -1,16 +1,24 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
-const resend = new Resend(process.env.RESEND_API_KEY || 'test');
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.SMTP_PORT || '587'),
+  secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 export class EmailService {
   static async sendOTP(email: string, otp: string): Promise<void> {
     try {
-      if (!process.env.RESEND_API_KEY) {
+      if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
          console.log(`✅ [DEV] simulated OTP sent to ${email}: ${otp}`);
          return;
       }
-      await resend.emails.send({
-        from: 'AquaGuard <onboarding@resend.dev>', // Use this for testing
+      await transporter.sendMail({
+        from: `"AquaGuard" <${process.env.SMTP_USER}>`,
         to: email,
         subject: 'Your AquaGuard Login OTP',
         html: `
@@ -51,11 +59,11 @@ export class EmailService {
 
   static async sendWelcomeEmail(email: string, name: string): Promise<void> {
     try {
-      if (!process.env.RESEND_API_KEY) {
+      if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
          return;
       }
-      await resend.emails.send({
-        from: 'AquaGuard <onboarding@resend.dev>',
+      await transporter.sendMail({
+        from: `"AquaGuard" <${process.env.SMTP_USER}>`,
         to: email,
         subject: 'Welcome to AquaGuard! 🌊',
         html: `
@@ -92,7 +100,6 @@ export class EmailService {
       });
     } catch (error) {
       console.error('❌ Welcome email failed:', error);
-      // Don't throw - welcome email is not critical
     }
   }
 }

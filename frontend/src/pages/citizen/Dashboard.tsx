@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Droplets, TrendingUp, Map as MapIcon, ArrowRight, ShieldCheck, Clock } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { leakAPI } from '../../services/api';
-import { Leak } from '../../types';
+import type { Leak } from '../../types';
 import LeakMap from '../../components/shared/LeakMap';
 
 const Dashboard = () => {
@@ -19,17 +19,30 @@ const Dashboard = () => {
   ];
 
   useEffect(() => {
+    let mounted = true;
+    
     const fetchLeaks = async () => {
       try {
         const response = await leakAPI.getMyLeaks();
-        setRecentLeaks(response.data);
+        if (mounted) {
+          setRecentLeaks(response.data);
+          setLoading(false);
+        }
       } catch (error) {
         console.error('Failed to fetch leaks:', error);
-      } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
-    fetchLeaks();
+    
+    fetchLeaks(); // Initial fetch
+    
+    // Real-time polling
+    const intervalId = setInterval(fetchLeaks, 5000); 
+    
+    return () => {
+      mounted = false;
+      clearInterval(intervalId);
+    };
   }, []);
 
   return (

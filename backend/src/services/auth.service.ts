@@ -2,6 +2,7 @@ import { PrismaClient, User } from '@prisma/client';
 import { generateOTP, getOTPExpiry, isOTPExpired } from '../utils/otp';
 import { generateToken } from '../utils/jwt';
 import { EmailService } from './email.service';
+import { SmsService } from './sms.service';
 import { isValidEmail, isValidPhone } from '../utils/validators';
 
 const prisma = new PrismaClient();
@@ -36,8 +37,7 @@ export class AuthService {
       if (type === 'email') {
         await EmailService.sendOTP(identifier, otp);
       } else {
-        // For hackathon, we'll just log the OTP (SMS costs money)
-        console.log(`📱 SMS OTP for ${identifier}: ${otp}`);
+        throw new Error('Only email verification is supported currently.');
       }
 
       return {

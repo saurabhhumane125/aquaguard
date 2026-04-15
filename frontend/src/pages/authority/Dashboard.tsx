@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ShieldAlert, Droplets, Clock, MapPin, CheckCircle, AlertTriangle } from 'lucide-react';
 import { leakAPI } from '../../services/api';
-import { Leak } from '../../types';
+import type { Leak } from '../../types';
 import LeakMap from '../../components/shared/LeakMap';
 
 const AuthorityDashboard = () => {
@@ -9,17 +9,30 @@ const AuthorityDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+    
     const fetchAllLeaks = async () => {
       try {
         const response = await leakAPI.getLeaks();
-        setLeaks(response.data);
+        if (mounted) {
+          setLeaks(response.data);
+          setLoading(false);
+        }
       } catch (error) {
         console.error('Failed to fetch leaks for authority:', error);
-      } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
-    fetchAllLeaks();
+    
+    fetchAllLeaks(); // Initial fetch
+    
+    // Real-time polling
+    const intervalId = setInterval(fetchAllLeaks, 5000);
+    
+    return () => {
+      mounted = false;
+      clearInterval(intervalId);
+    };
   }, []);
 
   const criticalLeaks = leaks.filter(l => l.severity === 'CRITICAL' || l.severity === 'SEVERE').length;

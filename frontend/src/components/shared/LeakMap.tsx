@@ -2,7 +2,7 @@ import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Leak, Cluster } from '../../types';
+import type { Leak, Cluster } from '../../types';
 
 // Fix typical Leaflet missing icon issues
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
